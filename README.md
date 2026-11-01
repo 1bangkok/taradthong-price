@@ -12,7 +12,7 @@
 
 | ไฟล์ | ใช้ทำอะไร |
 |---|---|
-| `render_card.py` | สร้างรูปการ์ดราคาทอง + ตรวจตัวเลข |
+| `render_card.py` | สร้างรูปการ์ดราคาทอง + ตรวจตัวเลข · ทำได้ 2 แบบด้วยคีย์ `brand`: `thaimitr2` (โลโก้ไทยมิตร2 ด้านบน → goldhit, `images/YYYY-MM-DD.jpg`) และ `taradthong` (สลับเอาโลโก้ตลาดทองขึ้นบน → goldhip, `images/YYYY-MM-DD-tt.jpg`) |
 | `assets/logo-thaimitr2.png`, `assets/logo-taradthong.png` | โลโก้ร้าน |
 | `assets/fonts/` | ฟอนต์ Kanit และ Sarabun (สัญญาอนุญาต SIL Open Font License) |
 | `images/` | รูปที่โพสต์แต่ละวัน (ลบรูปเก่ากว่า 60 วันอัตโนมัติ) |

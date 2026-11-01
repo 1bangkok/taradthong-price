@@ -4,6 +4,8 @@
     python3 render_card.py '<json>' images/2026-10-13.png
 
 JSON ต้องมี: date, time, change, buy, sell, gold, usdthb, kitco
+คีย์เสริม brand: "thaimitr2" (ค่าเริ่มต้น: โลโก้ไทยมิตร2 ใหญ่ด้านบน + โลโก้ตลาดทองเล็กด้านล่าง)
+                หรือ "taradthong" (สลับกัน: โลโก้ตลาดทองใหญ่ด้านบน + โลโก้ไทยมิตร2 เล็กด้านล่าง)
 เช่น {"date":"วันอังคารที่ 13 ตุลาคม พ.ศ.2569","time":"เวลา 09:30 น.","change":"+50",
       "buy":"66,400","sell":"66,600","gold":"66,517","usdthb":"33.55","kitco":"4,192"}
 
@@ -44,6 +46,8 @@ def validate(d):
     for k in ("date", "time", "change", "buy", "sell", "gold", "usdthb", "kitco"):
         if not str(d.get(k, "")).strip():
             problems.append(f"ไม่มีค่า {k}")
+    if d.get("brand", "thaimitr2") not in ("thaimitr2", "taradthong"):
+        problems.append(f"brand ต้องเป็น thaimitr2 หรือ taradthong (ได้ {d.get('brand')})")
     if problems:
         return problems
     buy, sell = to_int(d["buy"]), to_int(d["sell"])
@@ -71,6 +75,14 @@ def build_html(d):
     ])
     logo_tm = b64(HERE / "assets" / "logo-thaimitr2.png")
     logo_tt = b64(HERE / "assets" / "logo-taradthong.png")
+    if d.get("brand", "thaimitr2") == "taradthong":
+        top = f'<img class="logo-sq" src="data:image/png;base64,{logo_tt}" alt="">'
+        foot_logo = f'<img class="tm" src="data:image/png;base64,{logo_tm}" alt="">'
+        foot_site = "ห้างทองไทยมิตร2 (อยุธยา)"
+    else:
+        top = f'<img class="logo" src="data:image/png;base64,{logo_tm}" alt="">'
+        foot_logo = f'<img class="tt" src="data:image/png;base64,{logo_tt}" alt="">'
+        foot_site = "www.taradthong.com"
 
     chg = d["change"].strip()
     if to_int(chg) == 0:
@@ -87,6 +99,9 @@ body{{width:1080px;height:1080px;overflow:hidden;font-family:'Kanit',sans-serif;
  background:radial-gradient(ellipse at 50% 18%,#c0282a 0%,#ac1e1e 45%,#7d1214 100%);
  display:flex;flex-direction:column;align-items:center;padding:34px 64px 40px}}
 .logo{{width:390px;height:auto;display:block}}
+.logo-sq{{width:270px;height:270px;border-radius:44px;border:5px solid #f2c75a;display:block;
+ box-shadow:0 10px 26px rgba(0,0,0,.35)}}
+.tm{{height:100px;width:auto;display:block}}
 h1{{margin-top:16px;font-size:74px;font-weight:700;line-height:1.1;
  background:linear-gradient(180deg,#fff6cf,#f2c75a 60%,#c9952f);-webkit-background-clip:text;color:transparent}}
 .date{{font-family:'Sarabun','Kanit';font-size:30px;margin-top:6px;color:#fbe9c0}}
@@ -107,7 +122,7 @@ h1{{margin-top:16px;font-size:74px;font-weight:700;line-height:1.1;
 .site{{font-size:36px;font-weight:600;line-height:1.1}}
 .note{{font-family:'Sarabun','Kanit';font-size:21px;color:#f3d9a8}}
 </style></head><body>
-<img class="logo" src="data:image/png;base64,{logo_tm}" alt="">
+{top}
 <h1>ราคาทองคำแท่งวันนี้</h1>
 <div class="date">{d['date']} · {d['time']}</div>
 <div class="panel">
@@ -121,8 +136,8 @@ h1{{margin-top:16px;font-size:74px;font-weight:700;line-height:1.1;
  <div class="chip">KITCO/USD<b>{d['kitco']}</b></div>
 </div>
 <div class="foot">
- <img class="tt" src="data:image/png;base64,{logo_tt}" alt="">
- <div><div class="site">www.taradthong.com</div><div class="note">ราคาอาจเปลี่ยนแปลงระหว่างวัน</div></div>
+ {foot_logo}
+ <div><div class="site">{foot_site}</div><div class="note">ราคาอาจเปลี่ยนแปลงระหว่างวัน</div></div>
 </div>
 </body></html>"""
 
